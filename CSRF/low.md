@@ -10,11 +10,15 @@ CSRF与XSS最大的区别在于它没有盗取cookie而是直接利用
 
 ## burp suite拦截
 
-首先用burp suite拦截一个修改密码的报文。
+为了实现CSRF攻击（在用户不知情的情况下修改用户的密码），首先需要了解正常用户提交修改密码请求的URL以及需要什么样的参数。首先用burp suite拦截一个修改密码的报文。
 
 ![low0](image/low0.png)
 
 ![low1](image/low1.png)
+
+
+
+攻击者没有用户的cookie，就很难去修改其他用户的密码。但如果攻击者能让其他用户浏览攻击者的网页，他们就能完成修改其他用户的密码。因为尽管这是一个跨站请求，但是浏览器此时会在修改密码的请求中附上用户的cookie，使得服务器正常处理来自攻击者的请求。
 
 
 
@@ -111,6 +115,6 @@ apachectl restart
 
 ## 源码分析
 
-源码在`DVWA/vulnerabilities/csrf/source/low.php`可看到服务器接受两个密码后，会判断两个密码是否匹配（有防止SQL注入的代码，检查输入），匹配则修改，没有对CSRF攻击进行任何防范。
+源码在`DVWA/vulnerabilities/csrf/source/low.php`可看到服务器接受两个密码后，会判断两个密码是否匹配，匹配则修改，没有对CSRF攻击进行任何防范。
 
 ![low5](image/low5.png)
