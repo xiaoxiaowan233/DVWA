@@ -30,3 +30,14 @@ In Persistent XSS Attack，攻击者直接将恶意代码发送至目标网站�
 * Spoofing requests：注入的代码可以以用户的身份向目标网站发送http请求
 * Stealing information
 
+
+
+## XSS攻击平台
+
+* Attack API是一个用于XSS攻击的js库
+
+## Preventing XSS attack
+
+* 过滤：对用户的输入进行过滤，推荐使用经过严格审查的过滤规则。并且现在有很多开源的库可以实现过滤javascript代码
+* 编码的方式：通过对js代码编码，例如将"<script>alert("attack");</script>"编码为"`&lt;script&gt;alert("attack");&lt;script&gt`"，当浏览器看到被编码的脚本，不是执行它们，而是还原成"<script>alert("attack");</script>"显示。
+* httpLawed等协议，安全过滤
